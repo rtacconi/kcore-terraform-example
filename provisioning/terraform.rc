@@ -1,0 +1,6 @@
+provider_installation {
+  dev_overrides {
+    "kcorehypervisor/kcore" = "/mnt/data/dev/kcore/kcore-terraform-example/provisioning/provider"
+  }
+  direct {}
+}
