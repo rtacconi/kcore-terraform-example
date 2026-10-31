@@ -1,0 +1,14 @@
+#cloud-config
+hostname: ${hostname}
+package_update: true
+runcmd:
+  - |
+    set -eux
+    apt-get update
+    apt-get install -y build-essential curl kmod pciutils "linux-headers-$(uname -r)"
+    curl -fsSL -o /tmp/NVIDIA-grid.run "${guest_driver_url}"
+    echo "${guest_driver_sha256}  /tmp/NVIDIA-grid.run" | sha256sum -c -
+    sh /tmp/NVIDIA-grid.run --silent --no-questions
+    nvidia-smi -L | tee /dev/ttyS0 /run/nvidia-smi.txt
+    query=$(python3 -c 'import urllib.parse,sys; print(urllib.parse.quote(sys.stdin.read()))' < /run/nvidia-smi.txt || true)
+    curl -sS -o /dev/null "${phone_home}/${hostname}?nvidia_smi=$query" || true
