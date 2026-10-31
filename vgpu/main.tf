@@ -25,7 +25,7 @@ resource "tls_private_key" "vgpu" {
 
 resource "kcore_ssh_key" "vgpu" {
   name       = "vgpu-lab"
-  public_key = tls_private_key.vgpu.public_key_openssh
+  public_key = chomp(tls_private_key.vgpu.public_key_openssh)
 }
 
 resource "kcore_vgpu_host" "a2" {
